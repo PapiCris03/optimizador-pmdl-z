@@ -41,7 +41,7 @@ jobs:
           name: Optimizador-PMDL-Z-APK
           path: android/app/build/outputs/apk/debug/*.apk
 
-  build-windows:
+    build-windows:
     name: Build Windows EXE
     runs-on: windows-latest
     steps:
@@ -55,6 +55,21 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+
+      - name: Create Saiyan icon
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path src-tauri/icons | Out-Null
+          @'
+          <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024">
+            <rect width="1024" height="1024" rx="180" fill="#07060a"/>
+            <circle cx="512" cy="512" r="400" fill="none" stroke="#ff7a18" stroke-width="36"/>
+            <circle cx="512" cy="512" r="340" fill="#12100f"/>
+            <text x="512" y="660" font-family="serif" font-size="520" font-weight="bold" fill="#ffc93c" text-anchor="middle">悟</text>
+          </svg>
+          '@ | Set-Content -Path icon.svg -Encoding UTF8
+          magick icon.svg -resize 1024x1024 icon.png
+          npx tauri icon icon.png
 
       - name: Build Tauri app
         run: npx tauri build
