@@ -56,7 +56,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Create Saiyan icon
+            - name: Create Saiyan icon
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path src-tauri/icons | Out-Null
@@ -69,8 +69,9 @@ jobs:
           </svg>
           '@ | Set-Content -Path icon.svg -Encoding UTF8
           magick icon.svg -resize 1024x1024 icon.png
-          npx tauri icon icon.png
-
+          magick icon.png -define icon:auto-resize=256,128,64,48,32,16 src-tauri/icons/icon.ico
+          Copy-Item icon.png src-tauri/icons/icon.png
+          
       - name: Build Tauri app
         run: npx tauri build
 
