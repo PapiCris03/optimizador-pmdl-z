@@ -30,7 +30,21 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y imagemagick
           mkdir -p assets
-          cat > icon.svg <<'EOF'
+
+          cat > background.svg <<'EOF'
+          <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024">
+            <rect width="1024" height="1024" fill="#07060a"/>
+          </svg>
+          EOF
+
+          cat > foreground.svg <<'EOF'
+          <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024">
+            <circle cx="512" cy="512" r="300" fill="none" stroke="#ff7a18" stroke-width="28"/>
+            <text x="512" y="640" font-family="serif" font-size="400" font-weight="bold" fill="#ffc93c" text-anchor="middle">悟</text>
+          </svg>
+          EOF
+
+          cat > full.svg <<'EOF'
           <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024">
             <rect width="1024" height="1024" rx="180" fill="#07060a"/>
             <circle cx="512" cy="512" r="400" fill="none" stroke="#ff7a18" stroke-width="36"/>
@@ -38,10 +52,14 @@ jobs:
             <text x="512" y="660" font-family="serif" font-size="520" font-weight="bold" fill="#ffc93c" text-anchor="middle">悟</text>
           </svg>
           EOF
-          convert -background none icon.svg -resize 1024x1024 assets/icon-only.png
-          convert -background none icon.svg -resize 1024x1024 assets/icon-foreground.png
-          convert -background none icon.svg -resize 2732x2732 assets/logo.png
-          npx @capacitor/assets generate --android
+
+          convert -background none background.svg -resize 1024x1024 assets/icon-background.png
+          convert -background none foreground.svg -resize 1024x1024 assets/icon-foreground.png
+          convert -background none full.svg -resize 1024x1024 assets/icon-only.png
+          convert -background "#07060a" full.svg -resize 2732x2732 assets/splash.png
+          convert -background "#07060a" full.svg -resize 2732x2732 assets/splash-dark.png
+
+          npx capacitor-assets generate --android
           
       - name: Add Android platform
         run: npx cap add android
