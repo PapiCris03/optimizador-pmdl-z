@@ -29,6 +29,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y imagemagick
+          mkdir -p assets
           cat > icon.svg <<'EOF'
           <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024">
             <rect width="1024" height="1024" rx="180" fill="#07060a"/>
@@ -37,8 +38,10 @@ jobs:
             <text x="512" y="660" font-family="serif" font-size="520" font-weight="bold" fill="#ffc93c" text-anchor="middle">悟</text>
           </svg>
           EOF
-          convert -background none icon.svg -resize 512x512 icon.png
-          npx @capacitor/assets generate --android --iconBackgroundColor '#07060a' --iconBackgroundColorDark '#07060a' --splashBackgroundColor '#07060a' --splashBackgroundColorDark '#07060a' --icon 'icon.png' --splash 'icon.png'
+          convert -background none icon.svg -resize 1024x1024 assets/icon-only.png
+          convert -background none icon.svg -resize 1024x1024 assets/icon-foreground.png
+          convert -background none icon.svg -resize 2732x2732 assets/logo.png
+          npx @capacitor/assets generate --android
           
       - name: Add Android platform
         run: npx cap add android
