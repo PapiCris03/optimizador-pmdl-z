@@ -1,0 +1,30 @@
+{
+  "productName": "Optimizador PMDL Z",
+  "version": "1.0.0",
+  "identifier": "com.saiyanlab.optimizadorpmdlz",
+  "build": {
+    "frontendDist": "../"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Optimizador PMDL Z",
+        "width": 1280,
+        "height": 800,
+        "minWidth": 900,
+        "minHeight": 620,
+        "resizable": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis", "msi"],
+    "icon": [
+      "icons/icon.ico"
+    ]
+  }
+}
