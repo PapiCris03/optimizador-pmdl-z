@@ -38,8 +38,8 @@ jobs:
           </svg>
           EOF
           convert -background none icon.svg -resize 512x512 icon.png
-          npx @capacitor/cli asset generate --iconBackgroundColor '#07060a' --iconBackgroundColorDark '#07060a' --splashBackgroundColor '#07060a' --splashBackgroundColorDark '#07060a' --icon 'icon.png' --splash 'icon.png'
-
+          npx @capacitor/assets generate --android --iconBackgroundColor '#07060a' --iconBackgroundColorDark '#07060a' --splashBackgroundColor '#07060a' --splashBackgroundColorDark '#07060a' --icon 'icon.png' --splash 'icon.png'
+          
       - name: Add Android platform
         run: npx cap add android
 
