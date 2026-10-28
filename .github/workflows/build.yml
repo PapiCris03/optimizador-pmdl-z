@@ -24,6 +24,22 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Create Android icon
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y imagemagick
+          cat > icon.svg <<'EOF'
+          <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024">
+            <rect width="1024" height="1024" rx="180" fill="#07060a"/>
+            <circle cx="512" cy="512" r="400" fill="none" stroke="#ff7a18" stroke-width="36"/>
+            <circle cx="512" cy="512" r="340" fill="#12100f"/>
+            <text x="512" y="660" font-family="serif" font-size="520" font-weight="bold" fill="#ffc93c" text-anchor="middle">悟</text>
+          </svg>
+          EOF
+          magick -background none icon.svg -resize 512x512 icon.png
+          npx @capacitor/cli asset generate --iconBackgroundColor '#07060a' --iconBackgroundColorDark '#07060a' --splashBackgroundColor '#07060a' --splashBackgroundColorDark '#07060a' --icon 'icon.png' --splash 'icon.png'
+
       - name: Add Android platform
         run: npx cap add android
 
