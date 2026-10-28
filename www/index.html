@@ -140,6 +140,7 @@ pre{white-space:pre-wrap;font-size:12px;margin:10px 0 0;color:var(--mut)}
   border:1px solid var(--gold);border-radius:12px;
   box-shadow:0 0 22px rgba(255,201,60,.4);
 }
+#dl button{width:auto;margin-top:10px}
 .progress{height:10px;margin-top:14px;border-radius:999px;overflow:hidden;background:#0a0806;border:1px solid rgba(255,122,24,.25)}
 .progress i{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--orange),var(--gold));box-shadow:0 0 18px rgba(255,122,24,.6);transition:width .3s ease}
 .alert{display:none;margin-top:12px;padding:12px;border-radius:12px;font-size:13px}
@@ -528,7 +529,27 @@ function kiProgress(p,msg,type){
 }
 function resetKi(){bar.style.width='0%';alertBox.className='alert';alertBox.textContent=''}
 
-function saveBlob(blob,filename){
+async function saveBlob(blob,filename){
+  if(window.showSaveFilePicker){
+    try{
+      const handle=await window.showSaveFilePicker({
+        suggestedName:filename,
+        types:[{
+          description:'Archivo PMDL',
+          accept:{'application/octet-stream':['.pmdl']}
+        }]
+      });
+      const writable=await handle.createWritable();
+      await writable.write(blob);
+      await writable.close();
+      return null;
+    }catch(err){
+      if(err&&err.name==='AbortError'){
+        return null;
+      }
+    }
+  }
+
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
   a.href=url;
@@ -567,27 +588,32 @@ function show(){
   $('tb').innerHTML='<tr><th>Bloque</th><th>Mat.</th><th>Bytes</th><th>Regiones</th><th>Vértices</th><th>Triáng. reales</th></tr>'+
     m.blocks.map(x=>`<tr><td>${x.i}</td><td>${x.mat}</td><td>${fmt(x.size)}</td><td>${x.regs.length}</td><td>${fmt(x.v||0)}</td><td>${fmt(x.r||0)}</td></tr>`).join('');
 }
-$('rt').onclick=()=>{
+$('rt').onclick=async()=>{
   if(!cur)return;const {buf,m,name}=cur;
   kiProgress(50,'Reescribiendo sin cambios...');
   const out=rebuild(buf,m),ok=same(out,new Uint8Array(buf));
   $('rtr').innerHTML=ok?'<span class="ok">Reescritura idéntica byte a byte ('+fmt(out.length)+' bytes).</span>':'<span class="bad">La reescritura difiere del original. No uses este archivo.</span>';
-  const url=saveBlob(new Blob([out],{type:'application/octet-stream'}),name.replace(/\.pmdl$/i,'')+'_reescrito.pmdl');
-  $('dl').innerHTML='<p><a download="'+name.replace(/\.pmdl$/i,'')+'_reescrito.pmdl" href="'+url+'">Guardar archivo reescrito</a></p>';
+  const filename=name.replace(/\.pmdl$/i,'')+'_reescrito.pmdl';
+  const url=await saveBlob(new Blob([out],{type:'application/octet-stream'}),filename);
+  if(url){
+    $('dl').innerHTML='<p><a download="'+filename+'" href="'+url+'">Guardar archivo reescrito</a></p>';
+  }
   kiProgress(100,ok?'Reescritura verificada.':'Reescritura con diferencias.',ok?'ok':'warn');
 };
-$('op').onclick=()=>{
+$('op').onclick=async()=>{
   if(!cur)return;const {buf,m,name}=cur;
   $('rtr').textContent='Optimizando…';$('dl').innerHTML='';kiProgress(45,'Canalizando Ki...');
-  setTimeout(()=>{try{
+  setTimeout(async()=>{try{
     const {out,st}=optimize(buf,m),ok=verify(buf,m,out),pc=(100*(1-out.length/m.size)).toFixed(1);
     $('rtr').innerHTML=(ok?'<span class="ok">Geometría verificada: mismos triángulos y mismo estado en todos los bloques.</span>':'<span class="bad">La verificación falló. No uses este archivo.</span>')+
       '<br>'+fmt(m.size)+' → '+fmt(out.length)+' bytes (−'+pc+' %)<br>Vértices guardados: '+fmt(st.vb)+' → '+fmt(st.va)+'<br>Regiones: '+fmt(st.rb)+' → '+fmt(st.ra);
     if(ok){
       cur.out=out;viewerOpt();
       const filename=name.replace(/\.pmdl$/i,'')+'_optimizado.pmdl';
-      const url=saveBlob(new Blob([out],{type:'application/octet-stream'}),filename);
-      $('dl').innerHTML='<p><a download="'+filename+'" href="'+url+'">Guardar pmdl optimizado</a></p>';
+      const url=await saveBlob(new Blob([out],{type:'application/octet-stream'}),filename);
+      if(url){
+        $('dl').innerHTML='<p><a download="'+filename+'" href="'+url+'">Guardar pmdl optimizado</a></p>';
+      }
     }
     kiProgress(100,ok?'¡Optimización completada!':'Verificación fallida.',ok?'ok':'warn');
   }catch(e){$('rtr').innerHTML='<span class="bad">Error: '+e.message+'</span>';kiProgress(0,'Error durante la optimización.','warn')}},30);
@@ -682,11 +708,20 @@ $('sm').onclick=()=>{
     const {out,st}=simplify(buf,m,eps),m2=parsePmdl(out.buffer),pc=(100*(1-out.length/m.size)).toFixed(1);
     if(m2.issues.length)throw new Error('el resultado no pasó la comprobación de estructura');
     cur.out=out;viewerOpt();
-    const filename=name.replace(/\.pmdl$/i,'')+'_simplificado.pmdl';
-    const url=saveBlob(new Blob([out],{type:'application/octet-stream'}),filename);
-    $('dl').innerHTML='<p><a download="'+filename+'" href="'+url+'">Guardar pmdl simplificado</a></p>';
+    cur.simplifiedFilename=name.replace(/\.pmdl$/i,'')+'_simplificado.pmdl';
+    cur.simplifiedBlob=new Blob([out],{type:'application/octet-stream'});
+
+    $('dl').innerHTML='<p><button id="saveSimplified" class="primary">Guardar pmdl simplificado</button></p>';
+
+    $('saveSimplified').onclick=async()=>{
+      const url=await saveBlob(cur.simplifiedBlob,cur.simplifiedFilename);
+      if(url){
+        $('dl').innerHTML='<p><a download="'+cur.simplifiedFilename+'" href="'+url+'">Guardar pmdl simplificado</a></p>';
+      }
+    };
+
     $('rtr').innerHTML='<span class="ok">Simplificado al '+(eps*100).toFixed(1).replace('.',',')+' % de error máximo.</span><br>'+fmt(m.size)+' → '+fmt(out.length)+' bytes ('+(pc>=0?'−':'+')+Math.abs(pc)+' %)<br>Triángulos: '+fmt(st.tb)+' → '+fmt(st.ta)+'<br>Regiones: '+fmt(st.rb)+' → '+fmt(st.ra)+'<br>Compáralo con el botón Optimizado del visor antes de usarlo.';
-    kiProgress(100,'Simplificación completada.');
+    kiProgress(100,'Simplificación completada. Pulsa Guardar pmdl simplificado.');
   }catch(e){$('rtr').innerHTML='<span class="bad">Error: '+e.message+'</span>';kiProgress(0,'Error durante la simplificación.','warn')}},30);
 };
 $('rep').onclick=()=>{
