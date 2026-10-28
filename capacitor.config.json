@@ -1,7 +1,7 @@
 {
   "appId": "com.saiyanlab.optimizadorpmdlz",
   "appName": "Optimizador PMDL Z",
-  "webDir": ".",
+  "webDir": "www",
   "bundledWebRuntime": false,
   "android": {
     "allowMixedContent": true
