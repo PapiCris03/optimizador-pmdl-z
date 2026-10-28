@@ -58,7 +58,8 @@ jobs:
           convert -background none full.svg -resize 1024x1024 assets/icon-only.png
           convert -background "#07060a" full.svg -resize 2732x2732 assets/splash.png
           convert -background "#07060a" full.svg -resize 2732x2732 assets/splash-dark.png
-
+         
+          npm install @capacitor/assets --save-dev --no-audit --no-fund
           npx capacitor-assets generate --android
           
       - name: Add Android platform
