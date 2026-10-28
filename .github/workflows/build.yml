@@ -37,7 +37,7 @@ jobs:
             <text x="512" y="660" font-family="serif" font-size="520" font-weight="bold" fill="#ffc93c" text-anchor="middle">悟</text>
           </svg>
           EOF
-          magick -background none icon.svg -resize 512x512 icon.png
+          convert -background none icon.svg -resize 512x512 icon.png
           npx @capacitor/cli asset generate --iconBackgroundColor '#07060a' --iconBackgroundColorDark '#07060a' --splashBackgroundColor '#07060a' --splashBackgroundColorDark '#07060a' --icon 'icon.png' --splash 'icon.png'
 
       - name: Add Android platform
