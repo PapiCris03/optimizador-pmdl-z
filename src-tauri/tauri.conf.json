@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "identifier": "com.saiyanlab.optimizadorpmdlz",
   "build": {
-    "frontendDist": "../"
+    "frontendDist": "../dist"
   },
   "app": {
     "windows": [
