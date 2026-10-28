@@ -233,13 +233,6 @@ pre{white-space:pre-wrap;font-size:12px;margin:10px 0 0;color:var(--mut)}
 
   </div>
 
-  <nav class="tabs">
-    <button data-go="0">Archivo</button>
-    <button data-go="1">Visor</button>
-    <button data-go="2">Análisis</button>
-    <button data-go="3">Descargas</button>
-  </nav>
-
 </div>
 
 <script>
@@ -676,13 +669,6 @@ $('rep').onclick=()=>{
   (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>{$('rtr').textContent='Informe copiado.';kiProgress(100,'Informe copiado.')},()=>{$('dl').innerHTML='<pre>'+t+'</pre>';kiProgress(100,'Informe generado.')});
 };
 
-document.querySelectorAll('.tabs button').forEach(btn=>{
-  btn.onclick=()=>{
-    const cards=document.querySelectorAll('.layout > .card');
-    const target=Number(btn.dataset.go);
-    if(cards[target])cards[target].scrollIntoView({behavior:'smooth',block:'start'});
-  };
-});
 }
 </script>
 </body>
