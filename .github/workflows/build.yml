@@ -42,8 +42,8 @@ jobs:
 
           cat > foreground.svg <<'EOF'
           <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024">
-            <circle cx="512" cy="512" r="300" fill="none" stroke="#ff7a18" stroke-width="28"/>
-            <text x="512" y="640" font-family="serif" font-size="400" font-weight="bold" fill="#ffc93c" text-anchor="middle">悟</text>
+          <circle cx="512" cy="512" r="230" fill="none" stroke="#ff7a18" stroke-width="24"/>
+          <text x="512" y="610" font-family="serif" font-size="300" font-weight="bold" fill="#ffc93c" text-anchor="middle">悟</text>
           </svg>
           EOF
 
