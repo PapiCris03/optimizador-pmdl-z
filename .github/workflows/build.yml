@@ -41,7 +41,7 @@ jobs:
           name: Optimizador-PMDL-Z-APK
           path: android/app/build/outputs/apk/debug/*.apk
 
-    build-windows:
+  build-windows:
     name: Build Windows EXE
     runs-on: windows-latest
     steps:
@@ -56,10 +56,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-            - name: Create Saiyan icon
+      - name: Install icon generator
+        run: npm install sharp --no-save
+
+      - name: Create Saiyan icon
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path src-tauri/icons | Out-Null
+
           @'
           <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024">
             <rect width="1024" height="1024" rx="180" fill="#07060a"/>
@@ -68,10 +72,25 @@ jobs:
             <text x="512" y="660" font-family="serif" font-size="520" font-weight="bold" fill="#ffc93c" text-anchor="middle">悟</text>
           </svg>
           '@ | Set-Content -Path icon.svg -Encoding UTF8
-          magick icon.svg -resize 1024x1024 icon.png
-          magick icon.png -define icon:auto-resize=256,128,64,48,32,16 src-tauri/icons/icon.ico
-          Copy-Item icon.png src-tauri/icons/icon.png
-          
+
+          node -e "const sharp=require('sharp');sharp('icon.svg').resize(1024,1024).png().toFile('icon.png').then(()=>console.log('PNG creado'))"
+
+          npx tauri icon icon.png
+
+          if (!(Test-Path 'src-tauri/icons/icon.ico')) {
+            Write-Error 'No se generó src-tauri/icons/icon.ico'
+            exit 1
+          }
+
+      - name: Verify icon
+        shell: pwsh
+        run: |
+          Get-ChildItem src-tauri/icons
+          if (!(Test-Path 'src-tauri/icons/icon.ico')) {
+            Write-Error 'Falta icon.ico'
+            exit 1
+          }
+
       - name: Build Tauri app
         run: npx tauri build
 
