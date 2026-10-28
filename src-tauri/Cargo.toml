@@ -1,0 +1,18 @@
+[package]
+name = "optimizador-pmdl-z"
+version = "1.0.0"
+description = "Optimizador PMDL Z para Tenkaichi Tag Team"
+authors = ["Saiyan Lab"]
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[lib]
+name = "optimizador_pmdl_z_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
