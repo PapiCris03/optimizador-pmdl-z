@@ -134,6 +134,9 @@ jobs:
             exit 1
           }
 
+      - name: Install Tauri plugins
+        run: npm install @tauri-apps/plugin-dialog @tauri-apps/plugin-fs --no-save
+
       - name: Build Tauri app
         run: npx tauri build
 
