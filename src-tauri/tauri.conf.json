@@ -1,20 +1,18 @@
 {
-  "productName": "Optimizador PMDL Z",
+  "productName": "Editor de Auras TTT",
   "version": "1.0.0",
-  "identifier": "com.saiyanlab.optimizadorpmdlz",
+  "identifier": "com.ttt.editorauras",
   "build": {
-    "frontendDist": "../dist"
+    "frontendDist": "../www"
   },
   "app": {
-    "withGlobalTauri": true,
     "windows": [
       {
-        "title": "Optimizador PMDL Z",
+        "title": "Editor de Auras TTT",
         "width": 1280,
         "height": 800,
-        "minWidth": 900,
-        "minHeight": 620,
-        "resizable": true
+        "resizable": true,
+        "fullscreen": false
       }
     ],
     "security": {
@@ -23,7 +21,7 @@
   },
   "bundle": {
     "active": true,
-    "targets": ["nsis", "msi"],
+    "targets": ["nsis"],
     "icon": [
       "icons/icon.ico"
     ]
