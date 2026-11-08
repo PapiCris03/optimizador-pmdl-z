@@ -1,9 +1,6 @@
 {
-  "appId": "com.saiyanlab.optimizadorpmdlz",
-  "appName": "Optimizador PMDL Z",
+  "appId": "com.ttt.editorauras",
+  "appName": "Editor de Auras TTT",
   "webDir": "www",
-  "bundledWebRuntime": false,
-  "android": {
-    "allowMixedContent": true
-  }
+  "bundledWebRuntime": false
 }
