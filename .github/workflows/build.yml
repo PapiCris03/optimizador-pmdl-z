@@ -24,6 +24,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Generate Tauri icons
+        run: npx tauri icon assets/icon.png
+
       - name: Build Tauri app
         run: npx tauri build
 
@@ -54,6 +57,9 @@ jobs:
 
       - name: Add Android platform
         run: npx cap add android
+
+      - name: Generate Android icons
+        run: npx @capacitor/assets generate --android
 
       - name: Sync web assets
         run: npx cap sync android
