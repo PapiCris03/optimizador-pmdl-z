@@ -1,4 +1,4 @@
-name: Build Editor de Auras TTT
+name: Build Aura Lab SB2
 
 on:
   workflow_dispatch:
@@ -32,7 +32,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Editor-de-Auras-TTT-Windows
+          name: Aura-Lab-SB2-Windows
           path: |
             src-tauri/target/release/*.exe
             src-tauri/target/release/bundle/nsis/*.exe
@@ -72,5 +72,5 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Editor-de-Auras-TTT-APK
+          name: Aura-Lab-SB2-APK
           path: android/app/build/outputs/apk/debug/*.apk
