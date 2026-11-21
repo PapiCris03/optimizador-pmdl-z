@@ -1,14 +1,14 @@
 {
-  "productName": "Aura Lab SB2",
+  "productName": "Editor de auras TTT",
   "version": "1.0.0",
-  "identifier": "com.sb2.auralab",
+  "identifier": "com.ttt.editorauras",
   "build": {
     "frontendDist": "../www"
   },
   "app": {
     "windows": [
       {
-        "title": "Aura Lab SB2",
+        "title": "Editor de auras TTT",
         "width": 1280,
         "height": 800,
         "resizable": true,
