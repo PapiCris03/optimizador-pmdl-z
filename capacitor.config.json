@@ -1,6 +1,6 @@
 {
-  "appId": "com.ttt.editorauras",
-  "appName": "Editor de Auras TTT",
+  "appId": "com.sb2.auralab",
+  "appName": "Aura Lab SB2",
   "webDir": "www",
   "bundledWebRuntime": false
 }
